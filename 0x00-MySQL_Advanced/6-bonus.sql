@@ -11,5 +11,5 @@ BEGIN
 	END IF;
 	set @id = (select id from projects where name = project_name);
 	INSERT INTO corrections (user_id, project_id, score) VALUES (user_id, @id, score);
-END $$
+END //
 DELIMITER ;
