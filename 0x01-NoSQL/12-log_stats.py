@@ -24,7 +24,6 @@ if __name__ == "__main__":
     for method in methods:
         value = nginx_logs.count_documents({"method": method})
         print(f"\tmethod {method}: {value}")
-        
 
     print(nginx_logs.count_documents({"method": "GET", "path": "/status"}),
           "status check")
