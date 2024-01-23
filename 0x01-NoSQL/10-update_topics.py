@@ -10,4 +10,4 @@ def update_topics(mongo_collection, name, topics):
     changes topos of a school document
     """
     updated = mongo_collection.update({"name": name}, {"$set": {"topics": topics}})
-    updated.modified_count
+    return updated.modified_count
