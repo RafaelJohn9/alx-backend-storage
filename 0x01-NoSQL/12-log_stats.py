@@ -10,7 +10,7 @@ if __name__ == "__main__":
     nginx_logs = client.logs.nginx
 
     numOfLogs = nginx_logs.count_documents({})
-    print(numOfLogs)
+    print(numOfLogs, "logs")
 
     methods = {
             "GET": 0,
@@ -22,5 +22,9 @@ if __name__ == "__main__":
     for method in nginx_logs.find().method:
         methods[method] += 1
 
+    print("Methods:")
     for key, value in methods.items():
-        print(f"method {key}: {value}")
+        print(f"\tmethod {key}: {value}")
+
+    print(nginx_logs.count_documents({"method": "GET", "path": "/status"}),
+          "status check")
