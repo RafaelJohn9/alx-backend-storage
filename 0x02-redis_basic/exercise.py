@@ -4,7 +4,19 @@ a Cache class
 """
 import uuid
 import redis
-from typing import Union, Callable
+from typing import Union, Callable, Any
+from functools import wraps
+
+
+def count_calls(method: Callable) -> Callable:
+    methodName = method.__qualname__
+
+    @wraps(method)
+    def wrapper(self, *args: Any, **kwargs: Any) -> Any:
+        """ Wrapper function that increments a key in Redis"""
+        self._redis.incr(methodName)
+        return method(self, *args, **kwargs)
+    return wrapper
 
 
 class Cache:
@@ -18,6 +30,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         generates a  random key and stores
@@ -37,16 +50,15 @@ class Cache:
         value = self._redis.get(key)
         if value is not None:
             return fn(value) if fn is not None else value
-        else:
-            return None
+        return None
 
-    def get_str(self, key:str) -> str:
+    def get_str(self, key: str) -> str:
         """
         Retrieves a string from cache using a specified key
         """
         return str(self._redis.get(key))
 
-    def get_int(self, key:str) -> int:
+    def get_int(self, key: str) -> int:
         """
         Retrieves a int from cache using a specified key
         """
