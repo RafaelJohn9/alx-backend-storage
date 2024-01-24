@@ -4,7 +4,7 @@ a Cache class
 """
 import uuid
 import redis
-from typing import Union
+from typing import Union, Callable
 
 
 class Cache:
@@ -26,3 +26,16 @@ class Cache:
         randomKey = str(uuid.uuid4())
         self._redis.set(randomKey, data)
         return randomKey
+
+    def get(self,
+            key: str,
+            fn: Callable[bin, Union[str, int, float, None]]
+            ) -> str:
+        """
+        converts utf8 strings back to strings from bin
+        """
+        value = self._redis.get(key)
+        if value is not None:
+            return fn(value) if fn is not None else value
+        else:
+            return None
