@@ -29,8 +29,8 @@ class Cache:
 
     def get(self,
             key: str,
-            fn: Callable[bin, Union[str, int, float, None]]
-            ) -> str:
+            fn: Callable = None
+            ) -> Union[str, int, float, bytes]:
         """
         converts utf8 strings back to strings from bin
         """
@@ -39,3 +39,15 @@ class Cache:
             return fn(value) if fn is not None else value
         else:
             return None
+
+    def get_str(self, key:str) -> str:
+        """
+        Retrieves a string from cache using a specified key
+        """
+        return str(self._redis.get(key))
+
+    def get_int(self, key:str) -> int:
+        """
+        Retrieves a int from cache using a specified key
+        """
+        return int(self._redis.get(key))
